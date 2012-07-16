@@ -5,29 +5,69 @@
 
 
 
-int atoi(const char* str) 
+int atoi(const char* str, int base) 
 { 
     int sign = 0,num = 0; 
-    //assert(NULL != str); 
-    while (*str == ' ') 
-    { 
+    
+	// 忽略空格和换行
+    while (*str == ' ' || *str == '/t') 
         str++; 
-    } 
+   
     if ('-' == *str) 
     { 
-        sign = 1; str++; 
+        sign = -1; 
+		str++; 
     } 
-    while ((*str >= '0') && (*str <= '9')) 
-    { 
-        num = num*10 + (*str - '0'); //就是这一行，将对应字符转化为数字
+	
+	if (base != 10)
+	{
+		if (*str=='0')
+			str++;
+		if (*str == 'x' || *str == 'X')
+			str++;
+	}
 
-        str++; 
-    } 
-    if(sign == 1) 
+	if (base == 10 || base == 8)
+	{
+	    while ((*str >= '0') && (*str <= '9')) 
+		{ 
+			num = num*base + (*str - '0'); //就是这一行，将对应字符转化为数字
+			str++; 
+		} 
+	}
+
+	else if (base == 16)
+	{
+		while (1)
+		{
+			if ((*str >= '0') && (*str <= '9'))
+			{
+				num = num*base + (*str - '0'); //就是这一行，将对应字符转化为数字
+				
+			}
+			else if ((*str >= 'a') && (*str <= 'f'))
+			{
+				num = num*base + (*str - 'a')+10;
+				//str++
+			}
+			else if ((*str >= 'A') && (*str <= 'F'))
+			{
+				num = num*base + (*str - 'A')+10;
+				//str++;
+			}	
+			else
+				break;
+			str++;
+		}
+	}
+
+    if(sign == -1) 
         return -num; 
     else 
         return num; 
 }
+
+
 
 #define LONG_MAX 2147483647L  
 #define LONG_MIN (-2147483647L-1L)
@@ -92,9 +132,12 @@ long int _strtol_internal (const char *nptr, char **endptr, int base, int group)
 int _tmain(int argc, _TCHAR* argv[])
 {
 
-	int a =  _strtol_internal("0xFF", 0, 16, 0);
+	//int a =  _strtol_internal("123", 0, 10, 0);
 
-	//int a = atoi("-123");
+	int a = atoi("-123", 10);
+	a = atoi("0123", 8);
+	a = atoi("12F", 16);
+	a = atoi("0x43ab F", 16);
 	return 0;
 }
 
