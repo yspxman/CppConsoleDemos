@@ -1,0 +1,6 @@
+ipch
+Debug
+/*.suo
+/basic_functions_test/*.user
+/basic_functions_test/*.filters
+/*.sdf
